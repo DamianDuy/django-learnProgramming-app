@@ -10,3 +10,8 @@ More programming languages will be added later.
 The user can also indicate, which sections were the most difficult or the most engaging. Based on the users' answers the statistics will be made.
 
 This application is meant to be used by anyone who learns programming and needs an extra motivation or the progress tracking.
+It can also be used by programming courses' creators to check what topics are most problematic for users.
+
+Technology stack:<br />
+- Django framework<br />
+- Seaborn Python library for data visualization (the library's capabilities will be researched).
