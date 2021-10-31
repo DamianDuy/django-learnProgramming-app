@@ -27,3 +27,19 @@ It can also be used by programming courses' creators to check what topics are mo
 **Research topics:<br />**
 - The capabilities of Seaborn Python library
 - The statistics connected with the evaluation of the learning topics by users
+
+# Setup
+## Installation
+Installation of Django:
+
+```
+$ python -m pip install Django
+```
+
+## Running a project
+To run this project, change directory to directory where manage.py file is and run a command:
+
+```
+$ python manage.py runserver
+```
+Now that the server’s running, visit http://127.0.0.1:8000/ with your Web browser. 
