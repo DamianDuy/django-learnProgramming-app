@@ -20,7 +20,7 @@ class Profile(models.Model):
 
 class Group(models.Model):
   name = models.CharField(max_length=1000)
-  users = models.ManyToManyField(User, null=True)
+  users = models.ManyToManyField(User)
   slug = models.SlugField(max_length=1000, unique=True, blank=True, default="")
 
   def __str__(self):
