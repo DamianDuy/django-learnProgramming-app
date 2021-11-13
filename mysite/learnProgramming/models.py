@@ -1,3 +1,6 @@
+import random  
+import string
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
@@ -7,6 +10,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 class Programming_Language(models.Model):
     name = models.CharField(max_length=1000)
     slug = models.SlugField(max_length=1000, unique=True, blank=True, default="")
+    icon = models.CharField(max_length=1000, unique=True, blank=True, default="")
 
     def __str__(self):
         return self.name
@@ -15,6 +19,9 @@ class Programming_Language(models.Model):
         if self.slug == None or self.slug == "":
             self.slug = slugify(self.name)
         super(Programming_Language, self).save(*args, **kwargs)
+
+    def get_absolute_path(self):
+        return "/programming_language/"+self.slug
     
 
 class Subject(models.Model):
@@ -34,8 +41,12 @@ class Subject(models.Model):
 
     def save(self, *args, **kwargs):
         if self.slug == None or self.slug == "":
-            self.slug = slugify(self.name)
+            random_string="".join((random.choice(string.ascii_lowercase) for x in range(10)))
+            self.slug = slugify(self.name)+random_string
         super(Subject, self).save(*args, **kwargs)
+
+    def get_absolute_path(self):
+        return "/subject/"+self.slug
         
 class Test(models.Model):
     name = models.CharField(max_length=1000)
@@ -48,8 +59,12 @@ class Test(models.Model):
 
     def save(self, *args, **kwargs):
         if self.slug == None or self.slug == "":
-            self.slug = slugify(self.name)
+            random_string="".join((random.choice(string.ascii_lowercase) for x in range(10)))
+            self.slug = slugify(self.name)+random_string
         super(Test, self).save(*args, **kwargs)
+
+    def get_absolute_path(self):
+        return "/test/"+self.slug
 
 class Question(models.Model):
     question_number = models.IntegerField(default=0)

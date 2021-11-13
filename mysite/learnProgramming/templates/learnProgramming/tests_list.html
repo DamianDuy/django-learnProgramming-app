@@ -1,0 +1,28 @@
+{% extends "header/header.html" %}
+
+{% block midle_content %}
+  <h1>{{programming_lang.name}}</h1>
+  <h2>{{subject.name}}</h2>
+  <h3>Select a test</h3>
+  <hr>
+  {% if tests_list %}
+    <table class="table">
+        <thead class="thead-light">
+            <tr>
+                <th>Test nama</th>
+                <th>Autor</th>
+                <th>Questions number</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for test in tests_list %}
+            <tr>
+                <td><a href={{test.get_absolute_path}}>{{test.name}}</a></td>
+                <td>{{test.author}}</td>
+                <td>{{test.question_set.all.count}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+  {% endif %}
+{% endblock %} 

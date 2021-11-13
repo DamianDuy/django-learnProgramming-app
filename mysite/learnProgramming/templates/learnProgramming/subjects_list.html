@@ -1,0 +1,27 @@
+{% extends "header/header.html" %}
+
+{% block midle_content %}
+  <h1>{{programming_lang.name}}</h1>
+  <h2>Choose a subject</h2>
+  <hr>
+  {% if subjects_list %}
+    <table class="table">
+        <thead class="thead-light">
+            <tr>
+                <th>Subject name</th>
+                <th>Autor</th>
+                <th>Test number</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for subject in subjects_list %}
+            <tr>
+                <td><a href={{subject.get_absolute_path}}>{{subject.name}}</a></td>
+                <td>{{subject.author}}</td>
+                <td>{{subject.test_set.all.count}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+  {% endif %}
+{% endblock %} 
