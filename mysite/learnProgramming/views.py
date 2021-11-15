@@ -3,6 +3,12 @@ from .models import *
 
 # Create your views here.
 
+def about_view(request):
+    
+    return render( 
+        request, 
+        'learnProgramming/about.html'
+    )
 
 def programming_language_list_view(request):
     programming_language_list = Programming_Language.objects.all()
