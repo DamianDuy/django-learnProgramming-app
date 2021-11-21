@@ -123,3 +123,6 @@ STATIC_URL = '/static/'
 
 # configure default auto key type
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'

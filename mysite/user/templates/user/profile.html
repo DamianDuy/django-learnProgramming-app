@@ -1,0 +1,23 @@
+{% extends "header/header.html" %}
+
+{% block midle_content %}
+    <h3 class="font-italic text-center">Profile</h3>
+    {% if User %}
+          <table class="table">
+            <tr>
+                <th>Username</th>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>Email</th>
+                <th>Can add courses</th>
+            </tr>
+                <tr>
+                     <td>{{User.username}}</td>
+                     <td>{{User.first_name}}</td>
+                     <td>{{User.last_name}}</td>
+                     <td>{{User.email}}</td>
+                     <td>{{User.profile.canCreate}}</td>       
+                </tr>
+        </table>
+    {% endif %}
+{% endblock %}

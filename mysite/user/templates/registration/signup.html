@@ -1,0 +1,23 @@
+{% extends "header/header.html" %}
+
+{% block midle_content %}
+  <br>
+  <div class="container" style="max-width: 520px; border: 1px solid #6c757d; background-color: #f8f9fa; border-radius: 1.2rem;">
+    <br>
+    <h3 class="font-italic text-center">Sign up</h3>
+    <form method="post">
+      {% csrf_token %}
+      {% for field in form %}
+        <p>
+          {{ field.label_tag }}
+          {{ field }}
+          {% for error in field.errors %}
+            <p style="color: red">{{ error }}</p>
+          {% endfor %}
+        </p>
+      {% endfor %}
+      <button type="submit">Sign up</button>
+    </form>
+    <br>
+  </div>
+{% endblock %}

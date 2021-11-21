@@ -1,0 +1,33 @@
+{% extends "header/header.html" %}
+
+{% block midle_content %}
+  <br>
+   <div class="container" style="max-width: 520px; border: 1px solid #6c757d; background-color: #f8f9fa; border-radius: 1.2rem;">
+    <br>
+   <h3 class="font-italic text-center">Delete account</h3>
+   {% if Delete_Account_Form %}
+       {% if messages %}
+              <ul class="messages">
+                {% for message in messages %}
+                  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                      {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}<p style="color:red;">Important: {% endif %}
+                      {{ message }}
+                      {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}</p>{% endif %}
+                  </li>
+                {% endfor %}
+              </ul>
+       {% endif %} 
+       <form method="post">
+           {% csrf_token %}
+           
+           {{Delete_Account_Form.as_p}}
+           
+           <button type="submit">
+               Delete
+           </button>
+       </form>
+   {% endif %}
+   <br>
+   </div>
+{% endblock %}
+

@@ -67,7 +67,16 @@
 
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+        {% if user.is_authenticated %}
+          <li><a href="/user/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+          <li><a href="/user/edit_user"><span class="glyphicon glyphicon-user"></span> Edit Profile</a></li>
+          <li><a href="/user/change_password"><span class="glyphicon"></span> Change password</a></li>
+          <li><a href="/user/delete_accountt"><span class="glyphicon glyphicon-remove"></span> Delete account</a></li>
+          <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+        {% else %}
+          <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+          <li><a href="/signup"><span class="glyphicon"></span> Signup</a></li>
+        {% endif %}
       </ul>
     </div>
   </div>
@@ -81,8 +90,10 @@
       <p><a href="#">Link</a></p> -->
     </div> 
     <div class="col-sm-8 text-center">
-      {% block midle_content %}
-      {% endblock %}
+        <div class="container-fluid">
+          {% block midle_content %}
+          {% endblock %}
+        </div>
     </div>
     <div class="col-sm-2 sidenav">
       <!--<div class="well">

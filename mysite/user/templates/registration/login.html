@@ -1,0 +1,17 @@
+{% extends 'header/header.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block midle_content %}
+  <br>
+  <div class="container" style="max-width: 520px; border: 1px solid #6c757d; background-color: #f8f9fa; border-radius: 1.2rem;">
+    <div id="page_spacer" class="nav-scroller py-1 mb-0"></div>
+    <h3 class="font-italic text-center">Log in</h3>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Login</button>
+    </form>
+    <br>
+  </div>
+{% endblock %}
