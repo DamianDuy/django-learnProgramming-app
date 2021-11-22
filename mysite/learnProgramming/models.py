@@ -10,7 +10,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 class Programming_Language(models.Model):
     name = models.CharField(max_length=1000)
     slug = models.SlugField(max_length=1000, unique=True, blank=True, default="")
-    icon = models.CharField(max_length=1000, unique=True, blank=True, default="")
+    icon = models.CharField(max_length=1000, blank=True, default="")
 
     def __str__(self):
         return self.name

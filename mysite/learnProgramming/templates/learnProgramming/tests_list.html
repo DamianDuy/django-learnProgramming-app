@@ -4,6 +4,9 @@
   <h1>{{programming_lang.name}}</h1>
   <h2>{{subject.name}}</h2>
   <h3>Select a test</h3>
+  {% if user.is_superuser or user.profile.canCreate %}
+    <a href="/add_new_test/{{subject.slug}}"><span class="glyphicon glyphicon-plus-sign"></span> Add a new test</a>
+  {% endif %}
   <hr>
   {% if tests_list %}
     <table class="table">

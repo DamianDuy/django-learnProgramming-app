@@ -2,6 +2,9 @@
 
 {% block midle_content %}
   <h1>Choose a programming language</h1>
+  {% if user.is_superuser or user.profile.canCreate %}
+    <a href="/add_new_programming_language"><span class="glyphicon glyphicon-plus-sign"></span> Add a new programming language</a>
+  {% endif %}
   <hr>
   {% for language in programming_language_list %}
     <p>
