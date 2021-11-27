@@ -2,9 +2,9 @@
 
 {% block midle_content %}
     <br>
-    <div class="container" style="max-width: 520px; border: 1px solid #6c757d; background-color: #f8f9fa; border-radius: 1.2rem;">
+    <div class="container" style="max-width: 520px; border: 1px solid #6c757d; background-color: #f8f9fa; border-radius: 1.2rem; overflow-y: scroll; height:80vh;">
         <br>
-        <h3 class="font-italic text-center">Add a new test</h3>
+        <h3 class="font-italic text-center">{{title}}</h3>
 
         {% if messages %}
         <ul class="messages">
@@ -22,7 +22,7 @@
             {% csrf_token %}
             {{form.as_p}}
 
-            <button type="submit"><span class="glyphicon glyphicon-plus-sign"></span>Add</button>
+            <button type="submit"><span class="glyphicon glyphicon-plus-sign"></span>{{button_name}}</button>
         </form>
         {% endif %}
         <br>

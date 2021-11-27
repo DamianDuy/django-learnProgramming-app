@@ -1,6 +1,7 @@
 {% extends "header/header.html" %}
 
 {% block midle_content %}
+<div class="container-fluid" style="overflow-y: scroll; height:80vh;">
   <h1>{{programming_lang.name}}</h1>
   <h2>{{subject.name}}</h2>
   <h3>Select a test</h3>
@@ -15,6 +16,9 @@
                 <th>Test nama</th>
                 <th>Autor</th>
                 <th>Questions number</th>
+                {% if user.is_superuser %}
+                <th>Actions</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
@@ -23,9 +27,38 @@
                 <td><a href={{test.get_absolute_path}}>{{test.name}}</a></td>
                 <td>{{test.author}}</td>
                 <td>{{test.question_set.all.count}}</td>
+                {% if user.is_superuser %}
+                  <td>
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#{{test.name}}Modal"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+
+                    <div class="modal fade" id="{{test.name}}Modal" tabindex="-1" role="dialog" aria-labelledby="{{test.name}}ModalLabel" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="{{test.name}}ModalLabel">Delete</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            You are going to delete <b>{{test.name}}</b> test. Press Delete to continue.
+                            Note that the test and all related questions will be deleted as well.
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <a href="/delete_test/{{test.slug}}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Delete</a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <a href="/edit_test/{{test.slug}}" class="btn"><span class="glyphicon glyphicon-edit"></span> Edit</a>
+                  </td>
+                {% endif %}
             </tr>
         {% endfor %}
         </tbody>
     </table>
   {% endif %}
+</div>
 {% endblock %} 

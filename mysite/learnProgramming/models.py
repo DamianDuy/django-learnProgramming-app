@@ -53,6 +53,7 @@ class Test(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     slug = models.SlugField(max_length=1000, unique=True, blank=True, default="")
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, default=None)
+    test_description = models.TextField(default="")
 
     def __str__(self):
         return self.name
@@ -71,6 +72,7 @@ class Question(models.Model):
     question_content = models.TextField(null=False)
     max_points = models.IntegerField(default=0)
     test = models.ForeignKey(Test, on_delete=models.CASCADE)
+    multi_selection = models.BooleanField(default=False)
 
     def __str__(self):
         return self.question_content

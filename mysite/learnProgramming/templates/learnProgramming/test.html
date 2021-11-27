@@ -1,0 +1,16 @@
+{% extends "header/header.html" %}
+
+{% block midle_content %}
+    <br>
+    <div class="container" style="max-width: 520px; border: 1px solid #6c757d; background-color: #f8f9fa; border-radius: 1.2rem;">
+        <h1>{{test.name}}</h1>
+
+        <p>{{test.test_description}}</p>
+
+        <p>If you are ready press Start.</p>
+
+        <a class="btn btn-success btn-lg" href="/start_test/test.slug" role="button">Start</a>
+        <br>
+        <br>
+    </div>
+{% endblock %} 

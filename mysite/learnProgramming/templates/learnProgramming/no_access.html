@@ -1,0 +1,18 @@
+{% extends "header/header.html" %}
+
+{% block header_additional_content %}
+    <script>
+        setTimeout(function(){
+            window.location.href = '/';
+        }, 5000);
+    </script>
+{% endblock%}
+
+{% block midle_content %}
+    <br>
+    <div class="container" style="max-width: 520px; border: 1px solid #6c757d; background-color: #f8f9fa; border-radius: 1.2rem;">
+        <h1>No access!</h1>
+
+        <p>You do not have access to this functionality. Contact with the system administrator.</p>
+    </div>
+{% endblock %} 

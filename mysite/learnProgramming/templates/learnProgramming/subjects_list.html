@@ -14,6 +14,9 @@
                 <th>Subject name</th>
                 <th>Autor</th>
                 <th>Test number</th>
+                {% if user.is_superuser %}
+                <th>Actions</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
@@ -22,6 +25,32 @@
                 <td><a href={{subject.get_absolute_path}}>{{subject.name}}</a></td>
                 <td>{{subject.author}}</td>
                 <td>{{subject.test_set.all.count}}</td>
+                {% if user.is_superuser %}
+                  <td>
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#{{subject.name}}Modal"><span class="glyphicon glyphicon-trash"></span></button>
+
+                    <div class="modal fade" id="{{subject.name}}Modal" tabindex="-1" role="dialog" aria-labelledby="{{subject.name}}ModalLabel" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="{{subject.name}}ModalLabel">Delete</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            You are going to delete <b>{{subject.name}}</b> subject. Press Delete to continue.
+                            Note that the test and all related questions will be deleted as well.
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <a href="/delete_subject/{{subject.slug}}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Delete</a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                {% endif %}
             </tr>
         {% endfor %}
         </tbody>

@@ -15,6 +15,30 @@
         {{language.name}}
       {% endif %}
       </a>
+      {% if user.is_superuser %}
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#{{language.name}}Modal"><span class="glyphicon glyphicon-trash"></span></button>
+
+        <div class="modal fade" id="{{language.name}}Modal" tabindex="-1" role="dialog" aria-labelledby="{{language.name}}ModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="{{language.name}}ModalLabel">Delete</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                You are going to delete <b>{{language.name}}</b> language course. Press Delete to continue.
+                Note that the course and all related tests and questions will be deleted as well.
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <a href="/delete_programming_language/{{language.slug}}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Delete</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endif %}
     </p>
   {% endfor %}
 {% endblock %} 

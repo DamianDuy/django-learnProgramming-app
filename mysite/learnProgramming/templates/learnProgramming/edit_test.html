@@ -1,0 +1,29 @@
+{% extends "header/header.html" %}
+
+{% block midle_content %}
+    <div class="container-fluid" style="overflow-y: scroll; height:80vh;">
+        <br>
+        <p>Programming langugage: <b>{{test.subject.programming_lang.name}}</b></p>
+        <p>Subject: <b>{{test.subject.name}}</b></p>
+        <p>Test: <b>{{test.name}}</b></p>
+        <br>
+        {% if user.is_superuser or user.profile.canCreate %}
+            <a href="/add_new_question/{{test.slug}}"><span class="glyphicon glyphicon-plus-sign"></span> Add a new question</a>
+        {% endif %}
+        {% if questions %}{% for question in questions %}
+            <div class="container" style="max-width: 520px; border: 1px solid #6c757d; background-color: #f8f9fa; border-radius: 1.2rem;">
+                <p align="left">Question number: <b>{{question.question_number}}</b></p>
+                <p align="left">Question: <b>{{question.question_content}}</b></p>
+                <p align="left">Max points: <b>{{question.max_points}}</b></p>
+                <p align="left">Test: <b>{{question.test.name}}</b></p>
+                <p align="left">Multi selection: <b>{{question.multi_selection}}</b></p>
+
+                {% for answer in question.answer_set.all %}
+                    <p align="center">Answer: <b>{{answer.answer_content}}</b> {% if answer.if_correct %}<span class="glyphicon glyphicon-ok"></span>{% endif %}</p>
+                {% endfor %}
+                <p align="right"><a href="/edit_question/{{question.id}}" class="btn"><span class="glyphicon glyphicon-edit"></span> Edit</a></p>
+            </div>
+            <br>
+        {% endfor %}{% endif %}
+    </div>
+{% endblock %}
