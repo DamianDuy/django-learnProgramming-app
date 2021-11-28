@@ -39,7 +39,7 @@ urlpatterns = [
     path('add_new_question/<test_slug>', add_new_question_view, name='add_new_question_view'),
     path('edit_question/<question_id>', edit_question_view, name='edit_question_view'),
 
-    path('about', about_view, name='about_view'),
+    path('about.html', about_view, name='about_view'),
     path('no_access', no_access_view, name='no_access_view'),
     path('test/<test_slug>', test_view, name='test_view'),
 ]
