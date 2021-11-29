@@ -29,13 +29,13 @@
                 <td>{{test.question_set.all.count}}</td>
                 {% if user.is_superuser %}
                   <td>
-                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#{{test.name}}Modal"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#{{test.id}}Modal"><span class="glyphicon glyphicon-trash"></span> Delete</button>
 
-                    <div class="modal fade" id="{{test.name}}Modal" tabindex="-1" role="dialog" aria-labelledby="{{test.name}}ModalLabel" aria-hidden="true">
+                    <div class="modal fade" id="{{test.id}}Modal" tabindex="-1" role="dialog" aria-labelledby="{{test.id}}ModalLabel" aria-hidden="true">
                       <div class="modal-dialog" role="document">
                         <div class="modal-content">
                           <div class="modal-header">
-                            <h5 class="modal-title" id="{{test.name}}ModalLabel">Delete</h5>
+                            <h5 class="modal-title" id="{{test.id}}ModalLabel">Delete</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                               <span aria-hidden="true">&times;</span>
                             </button>

@@ -1,9 +1,12 @@
+from datetime import datetime
+
+from django import forms
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 from .models import *
-from .forms import Programming_Language_Form, Subject_Form, Test_Form, Question_Form
+from .forms import Programming_Language_Form, Subject_Form, Test_Form, Question_Form, Answer_Form
 
 # Create your views here.
 
@@ -16,46 +19,40 @@ def about_view(request):
 
 def programming_language_list_view(request):
     programming_language_list = Programming_Language.objects.all()
-
-    context = {
-        'programming_language_list': programming_language_list
-    }
     
     return render( 
         request, 
         'learnProgramming/index.html', 
-        context
+        {
+            'programming_language_list': programming_language_list
+        }
     )
 
 def subjects_list_view(request, programming_lang_slug):
     programming_lang = get_object_or_404(Programming_Language, slug=programming_lang_slug)
     subjects_list = Subject.objects.filter(programming_lang=programming_lang)
 
-    context = {
-        'programming_lang' : programming_lang,
-        'subjects_list' : subjects_list,
-    }
-
     return render(
         request,
         'learnProgramming/subjects_list.html',
-        context
+        {
+            'programming_lang' : programming_lang,
+            'subjects_list' : subjects_list,
+        }
     )
 
 def tests_list_view(request, subject_slug):
     subject = get_object_or_404(Subject, slug=subject_slug)
     tests_list = Test.objects.filter(subject=subject)
 
-    context = {
-        'programming_lang' : subject.programming_lang,
-        'subject' : subject,
-        'tests_list' : tests_list,
-    }
-
     return render(
         request,
         'learnProgramming/tests_list.html',
-        context
+        {
+            'programming_lang' : subject.programming_lang,
+            'subject' : subject,
+            'tests_list' : tests_list,
+        }
     )
 
 def no_access_view(request):
@@ -103,7 +100,6 @@ def delete_programming_language_view(request, programming_lang_slug):
 
     return redirect("/")
 
-
 @login_required(login_url='/login/')
 def add_new_subject_view(request, programming_lang_slug):
     if can_create(request.user) == False:
@@ -114,7 +110,7 @@ def add_new_subject_view(request, programming_lang_slug):
         if form.is_valid():
             name = form.cleaned_data['name']
             programming_lang = get_object_or_404(Programming_Language, slug=programming_lang_slug)
-            subject, created = Subject.objects.get_or_create( name=name, programming_lang=programming_lang)
+            subject, created = Subject.objects.get_or_create(name=name, programming_lang=programming_lang)
 
             if not created:
                 messages.error(request, 'Subject with the provided name already exists. Create a new one.')
@@ -160,7 +156,7 @@ def add_new_test_view(request, subject_slug):
             test, created = Test.objects.get_or_create( name=name, subject=subject, test_description=test_description)
 
             if not created:
-                messages.error(request, 'Subject with the provided name already exists. Create a new one.')
+                messages.error(request, 'Test with the provided name already exists. Create a new one.')
             else:
                 test.author = request.user
                 test.save()
@@ -211,7 +207,7 @@ def get_next_free_question_number(test:Test) -> int:
     questions_number = Question.objects.filter(test=test).count()
     return questions_number+1
 
-def is_only_one_answer_correct(elem_list:[bool]) -> bool:
+def is_only_one_answer_correct(elem_list) -> bool:
     counter = 0
     for elem in elem_list:
         counter = counter + 1 if elem == True else counter
@@ -221,7 +217,7 @@ def is_only_one_answer_correct(elem_list:[bool]) -> bool:
     
     return False
 
-def is_at_least_one_answer_correct(elem_list:[bool]) -> bool:
+def is_at_least_one_answer_correct(elem_list) -> bool:
     counter = 0
     for elem in elem_list:
         counter = counter + 1 if elem == True else counter
@@ -462,5 +458,81 @@ def test_view(request, test_slug):
         {
             'test' : test,
             'message': messages,
+        }
+    )
+
+@login_required(login_url='/login/')
+def start_test_view(request, test_slug):
+    test = get_object_or_404(Test, slug=test_slug)
+
+    questions = Question.objects.filter(test=test).order_by('question_number')[:test.questions_number]
+    for question in questions:
+        user_answer, created = User_Answer.objects.get_or_create(user=request.user, question=question)
+        if not created:
+            print("ERROR: this should be created!")
+
+    user_answers = User_Answer.objects.filter(user=request.user, question__test=test, answer=None, answered=False)[:1]
+    if user_answers.count() == 0:
+        return redirect('/solved_test/' + test.slug)
+    return redirect('/solve_test/' + test.slug + "/" + str(user_answers[0].question.id))
+
+@login_required(login_url='/login/')
+def solve_test_view(request, test_slug, question_id):
+    test = get_object_or_404(Test, slug=test_slug)
+    question = get_object_or_404(Question, id=question_id)
+
+    user_answers = User_Answer.objects.filter(user=request.user, question__test=test, answer=None, answered=False)
+    if user_answers.count() == 0:
+        return redirect('/solved_test/' + test.slug)
+
+    if request.method == 'POST':
+        form = Answer_Form(request.POST)
+        if form.is_valid():
+            user_answer =  User_Answer.objects.get(user=request.user, question=question, answer=None, answered=False)
+            user_answer.answered = True
+            answers = Answer.objects.filter(question=question)
+            for counter, answer in enumerate(answers):
+                field_name = "answer" + str(counter+1)
+                if form.cleaned_data[field_name]:
+                    user_answer.answer.add(answer)
+            user_answer.save()
+            Answers_Data.objects.get_or_create(answer_date=datetime.now(), user_answer=user_answer)
+            user_answers = User_Answer.objects.filter(user=request.user, question__test=test, answer=None, answered=False)[:1]
+            if user_answers.count() == 0:
+                return redirect('/solved_test/' + test.slug)
+            return redirect('/solve_test/' + test.slug + "/" + str(user_answers[0].question.id))
+    else:
+        form = Answer_Form()
+        answers = Answer.objects.filter(question=question)
+        counter = 1
+        for answer in answers:
+            field_name = "answer" + str(counter)
+            form.fields[field_name].label = answer.answer_content
+            counter = counter + 1
+
+        for index in range(counter, 11, 1):
+            field_name = "answer" + str(index)
+            form.fields[field_name].widget = forms.HiddenInput()
+
+    return render(
+        request, 
+        'learnProgramming/solve_test.html', 
+        {
+            'form': form,
+            'number': test.questions_number - user_answers.count() + 1,
+            'question': question,
+            'message': messages,
+        }
+    )
+
+@login_required(login_url='/login/')
+def solved_test_view(request, test_slug):
+    test = get_object_or_404(Test, slug=test_slug)
+
+    return render(
+        request, 
+        'learnProgramming/solved_test.html', 
+        {
+            'test': test,
         }
     )

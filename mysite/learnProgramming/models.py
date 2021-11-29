@@ -54,6 +54,7 @@ class Test(models.Model):
     slug = models.SlugField(max_length=1000, unique=True, blank=True, default="")
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, default=None)
     test_description = models.TextField(default="")
+    questions_number = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name
@@ -91,10 +92,14 @@ class Answer(models.Model):
 class User_Answer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE, default=None)
-    answer = models.ForeignKey(Answer, on_delete=models.CASCADE, null=True, default=None)
+    answer = models.ManyToManyField(Answer, null=True, default=None)
+    answered = models.BooleanField(default=False)
 
     def __str__(self):
-        return "User: " + str(self.user) + ", Question: " + str(self.question) + ", Answer: " + str(self.answer)
+        answers = ""
+        for elem in self.answer.all():
+            answers = answers + str(elem) + " "
+        return "User: " + str(self.user) + ", Question: " + str(self.question) + ", Answer: " + answers
 
 class Answers_Data(models.Model):
     answer_date = models.DateTimeField('answer date')

@@ -19,7 +19,8 @@ from .views import programming_language_list_view, add_new_programming_language_
 from .views import subjects_list_view, add_new_subject_view, delete_subject_view
 from .views import tests_list_view, add_new_test_view, delete_test_view, edit_test_view
 from .views import add_new_question_view, edit_question_view
-from .views import  about_view, no_access_view, test_view
+from .views import about_view, no_access_view
+from .views import test_view, start_test_view, solve_test_view, solved_test_view
 
 app_name = 'learnProgramming'
 urlpatterns = [
@@ -41,5 +42,9 @@ urlpatterns = [
 
     path('about.html', about_view, name='about_view'),
     path('no_access', no_access_view, name='no_access_view'),
+
     path('test/<test_slug>', test_view, name='test_view'),
+    path('start_test/<test_slug>', start_test_view, name='start_test_view'),
+    path('solve_test/<test_slug>/<question_id>', solve_test_view, name='solve_test_view'),
+    path('solved_test/<test_slug>', solved_test_view, name='solved_test_view'),
 ]

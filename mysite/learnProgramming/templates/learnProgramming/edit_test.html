@@ -6,6 +6,7 @@
         <p>Programming langugage: <b>{{test.subject.programming_lang.name}}</b></p>
         <p>Subject: <b>{{test.subject.name}}</b></p>
         <p>Test: <b>{{test.name}}</b></p>
+        <p>Questions number: <b>{{test.questions_number}}</b></p>
         <br>
         {% if user.is_superuser or user.profile.canCreate %}
             <a href="/add_new_question/{{test.slug}}"><span class="glyphicon glyphicon-plus-sign"></span> Add a new question</a>
