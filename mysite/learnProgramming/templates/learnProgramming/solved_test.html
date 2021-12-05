@@ -7,7 +7,13 @@
 
         <p>{{test.test_description}}</p>
 
-        <p>You have solved the test.</p>
+        <p>You got <b>{{user_points}}</b> out of <b>{{test_points}}</b> points in this test ({{user_result}}%).</p>
+
+        {% if test_status %}
+            <p>You have passed the test.</p>
+        {% else %}
+            <p>Unfortunatelly you did not passed this test. It is recommended to study the subject and retake the test.</p>
+        {% endif %}
         <br>
     </div>
 {% endblock %} 

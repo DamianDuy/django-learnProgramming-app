@@ -45,6 +45,6 @@ urlpatterns = [
 
     path('test/<test_slug>', test_view, name='test_view'),
     path('start_test/<test_slug>', start_test_view, name='start_test_view'),
-    path('solve_test/<test_slug>/<question_id>', solve_test_view, name='solve_test_view'),
-    path('solved_test/<test_slug>', solved_test_view, name='solved_test_view'),
+    path('solve_test/<test_slug>/<test_counter_id>/<question_id>', solve_test_view, name='solve_test_view'),
+    path('solved_test/<test_slug>/<test_counter_id>', solved_test_view, name='solved_test_view'),
 ]

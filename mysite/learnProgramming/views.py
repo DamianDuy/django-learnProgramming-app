@@ -127,7 +127,7 @@ def add_new_subject_view(request, programming_lang_slug):
         'learnProgramming/add_new_subject.html', 
         {
             'form': form,
-            'messages': messages,
+            'messages': messages.get_messages(request),
         }
     )
 
@@ -152,6 +152,8 @@ def add_new_test_view(request, subject_slug):
         if form.is_valid():
             name = form.cleaned_data['name']
             test_description = form.cleaned_data['test_description']
+            threshold = form.cleaned_data['threshold']
+            questions_number = form.cleaned_data['questions_number']
             subject = get_object_or_404(Subject, slug=subject_slug)
             test, created = Test.objects.get_or_create( name=name, subject=subject, test_description=test_description)
 
@@ -159,6 +161,8 @@ def add_new_test_view(request, subject_slug):
                 messages.error(request, 'Test with the provided name already exists. Create a new one.')
             else:
                 test.author = request.user
+                test.threshold = threshold
+                test.questions_number = questions_number
                 test.save()
                 return redirect('/edit_test/' + test.slug)
     else:
@@ -169,7 +173,7 @@ def add_new_test_view(request, subject_slug):
         'learnProgramming/add_new_test.html', 
         {
             'form': form,
-            'message': messages,
+            'messages': messages.get_messages(request),
         }
     )
 
@@ -199,7 +203,7 @@ def edit_test_view(request, test_slug):
         {
             'test': test,
             'questions': questions,
-            'message': messages,
+            'messages': messages.get_messages(request),
         }
     )
 
@@ -329,7 +333,7 @@ def add_new_question_view(request, test_slug):
             'title' : title,
             'button_name' : button_name,
             'form': form,
-            'message': messages,
+            'messages': messages.get_messages(request),
         }
     )
 
@@ -444,7 +448,7 @@ def edit_question_view(request, question_id):
             'title' : title,
             'button_name' : button_name,
             'form': form,
-            'message': messages,
+            'messages': messages.get_messages(request),
         }
     )
 
@@ -457,50 +461,58 @@ def test_view(request, test_slug):
         'learnProgramming/test.html', 
         {
             'test' : test,
-            'message': messages,
+            'messages': messages.get_messages(request),
         }
     )
+
+def redirect_to_next_question_or_end(request, test, test_counter):
+    user_answers = User_Answer.objects.filter(user=request.user, question__test=test, answer=None, answered=False)[:1]
+    if user_answers.count() == 0:
+        return redirect('/solved_test/' + test.slug + "/" + str(test_counter.id))
+    return redirect('/solve_test/' + test.slug + "/" + str(test_counter.id) + "/" + str(user_answers[0].question.id))
+
+def get_free_test_number(user, test):
+    return Test_Counter.objects.filter(user=user, test=test).count() + 1
 
 @login_required(login_url='/login/')
 def start_test_view(request, test_slug):
     test = get_object_or_404(Test, slug=test_slug)
 
+    test_counter, test_counter_created = Test_Counter.objects.get_or_create(user=request.user, test=test, counter=get_free_test_number(request.user, test))
+
+    print(test)
     questions = Question.objects.filter(test=test).order_by('question_number')[:test.questions_number]
+    print(questions)
     for question in questions:
-        user_answer, created = User_Answer.objects.get_or_create(user=request.user, question=question)
+        user_answer, created = User_Answer.objects.get_or_create(user=request.user, question=question, test_counter=test_counter)
         if not created:
             print("ERROR: this should be created!")
 
-    user_answers = User_Answer.objects.filter(user=request.user, question__test=test, answer=None, answered=False)[:1]
-    if user_answers.count() == 0:
-        return redirect('/solved_test/' + test.slug)
-    return redirect('/solve_test/' + test.slug + "/" + str(user_answers[0].question.id))
+    return redirect_to_next_question_or_end(request, test, test_counter)
 
 @login_required(login_url='/login/')
-def solve_test_view(request, test_slug, question_id):
+def solve_test_view(request, test_slug, test_counter_id, question_id):
     test = get_object_or_404(Test, slug=test_slug)
     question = get_object_or_404(Question, id=question_id)
+    test_counter = get_object_or_404(Test_Counter, id=test_counter_id)
 
-    user_answers = User_Answer.objects.filter(user=request.user, question__test=test, answer=None, answered=False)
+    user_answers = User_Answer.objects.filter(user=request.user, question__test=test, answer=None, answered=False, test_counter=test_counter)
     if user_answers.count() == 0:
-        return redirect('/solved_test/' + test.slug)
+        return redirect('/solved_test/' + test.slug + "/" + str(test_counter.id))
 
     if request.method == 'POST':
         form = Answer_Form(request.POST)
         if form.is_valid():
-            user_answer =  User_Answer.objects.get(user=request.user, question=question, answer=None, answered=False)
+            user_answer =  User_Answer.objects.get(user=request.user, question=question, answer=None, answered=False, test_counter=test_counter)
             user_answer.answered = True
             answers = Answer.objects.filter(question=question)
             for counter, answer in enumerate(answers):
                 field_name = "answer" + str(counter+1)
                 if form.cleaned_data[field_name]:
                     user_answer.answer.add(answer)
+            user_answer.answer_date = datetime.now()
             user_answer.save()
-            Answers_Data.objects.get_or_create(answer_date=datetime.now(), user_answer=user_answer)
-            user_answers = User_Answer.objects.filter(user=request.user, question__test=test, answer=None, answered=False)[:1]
-            if user_answers.count() == 0:
-                return redirect('/solved_test/' + test.slug)
-            return redirect('/solve_test/' + test.slug + "/" + str(user_answers[0].question.id))
+            return redirect_to_next_question_or_end(request, test, test_counter)
     else:
         form = Answer_Form()
         answers = Answer.objects.filter(question=question)
@@ -521,18 +533,56 @@ def solve_test_view(request, test_slug, question_id):
             'form': form,
             'number': test.questions_number - user_answers.count() + 1,
             'question': question,
-            'message': messages,
+            'messages': messages.get_messages(request),
         }
     )
 
+def get_correct_answer_number(question):
+    return Answer.objects.filter(question=question, if_correct=True).count()
+
+def get_points(user, test, test_counter):
+    user_answers = User_Answer.objects.filter(user=user, question__test=test, test_counter=test_counter)
+    user_points = 0
+    test_points = 0
+    for user_answer in user_answers:
+        question_point = user_answer.question.max_points
+        test_points += question_point
+        if user_answer.answered:
+            if user_answer.question.multi_selection:
+                correct_answers_number = get_correct_answer_number(user_answer.question)
+                user_correct_answers_number = 0
+                for answer in user_answer.answer.all():
+                    if user_answer.answer.all()[0].if_correct:
+                        user_correct_answers_number += 1
+                if correct_answers_number == user_correct_answers_number:
+                    user_points += question_point
+            else:
+                if user_answer.answer.all()[0].if_correct:
+                    user_points += question_point
+    return user_points, test_points
+
+def check_if_test_passed(user_points, test_points, threshold):
+    user_result = int(100*user_points/test_points)
+    if user_result >= threshold:
+        return True, user_result
+    return False, user_result
+
 @login_required(login_url='/login/')
-def solved_test_view(request, test_slug):
+def solved_test_view(request, test_slug, test_counter_id):
     test = get_object_or_404(Test, slug=test_slug)
+    test_counter = get_object_or_404(Test_Counter, id=test_counter_id)
+
+    user_points, test_points = get_points(request.user, test, test_counter)
+    test_status, user_result = check_if_test_passed(user_points, test_points, test.threshold)
 
     return render(
         request, 
         'learnProgramming/solved_test.html', 
         {
             'test': test,
+            'user_points': user_points,
+            'test_points': test_points,
+            'test_status': test_status,
+            'user_result': user_result,
         }
     )

@@ -55,6 +55,12 @@ class Test(models.Model):
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, default=None)
     test_description = models.TextField(default="")
     questions_number = models.IntegerField(default=0)
+    threshold = models.IntegerField(default=100,
+        validators=[
+            MaxValueValidator(100),
+            MinValueValidator(1)
+        ]
+    )
 
     def __str__(self):
         return self.name
@@ -89,21 +95,24 @@ class Answer(models.Model):
     def __str__(self):
         return self.answer_content
 
+class Test_Counter(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    test = models.ForeignKey(Test, on_delete=models.CASCADE)
+    counter = models.PositiveIntegerField(default=0)
+
 class User_Answer(models.Model):
+    test_counter = models.ForeignKey(Test_Counter, on_delete=models.CASCADE, default=None, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE, default=None)
-    answer = models.ManyToManyField(Answer, null=True, default=None)
+    answer = models.ManyToManyField(Answer, default=None)
     answered = models.BooleanField(default=False)
+    answer_date = models.DateTimeField('answer date', null=True, default=None)
 
     def __str__(self):
         answers = ""
         for elem in self.answer.all():
             answers = answers + str(elem) + " "
         return "User: " + str(self.user) + ", Question: " + str(self.question) + ", Answer: " + answers
-
-class Answers_Data(models.Model):
-    answer_date = models.DateTimeField('answer date')
-    user_answer = models.ForeignKey(User_Answer, on_delete=models.CASCADE)
     
 class Subject_Point(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -16,7 +16,12 @@ class Subject_Form(forms.ModelForm):
 class Test_Form(forms.ModelForm):
     class Meta:
         model = Test
-        fields = ('name', 'test_description',)
+        fields = ('name', 'test_description', 'questions_number', 'threshold')
+
+    def __init__(self, *args, **kwargs):
+        super(Test_Form, self).__init__(*args, **kwargs)
+        self.fields['threshold'].widget.attrs.update({'min': 1, 'max': 100})
+        self.fields['threshold'].label = "Test threshold [%]"
 
 class Question_Form(forms.Form):
     question_content = forms.CharField(label="Question", widget=forms.Textarea(attrs={'rows':3}), required=True)
