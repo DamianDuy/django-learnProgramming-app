@@ -1,0 +1,21 @@
+{% extends "header/header.html" %}
+
+{% block midle_content %}
+    <h3 class="font-italic text-center">Statistics</h3>
+          <table class="table">
+            <tr>
+                <th>Question</th>
+                <th>User</th>
+                <th>Time</th>
+                <th>Date</th>
+            </tr>
+            {% for answer in User_answer %}
+                <tr>
+                     <td>{{answer.question.question_content}}</td>
+                     <td>{{answer.user.username}}</td>
+                     <td>{{answer.answer_time}}</td>
+                     <td>{{answer.answer_date}}</td>
+                </tr>
+            {% endfor %}
+        </table>
+{% endblock %}

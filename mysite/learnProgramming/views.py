@@ -1,4 +1,5 @@
 from datetime import datetime
+import time
 
 from django import forms
 from django.shortcuts import get_object_or_404, render, redirect
@@ -492,6 +493,7 @@ def start_test_view(request, test_slug):
 
 @login_required(login_url='/login/')
 def solve_test_view(request, test_slug, test_counter_id, question_id):
+    start_time = time.time()
     test = get_object_or_404(Test, slug=test_slug)
     question = get_object_or_404(Question, id=question_id)
     test_counter = get_object_or_404(Test_Counter, id=test_counter_id)
@@ -511,6 +513,7 @@ def solve_test_view(request, test_slug, test_counter_id, question_id):
                 if form.cleaned_data[field_name]:
                     user_answer.answer.add(answer)
             user_answer.answer_date = datetime.now()
+            user_answer.answer_time = round(time.time() - start_time, 2)
             user_answer.save()
             return redirect_to_next_question_or_end(request, test, test_counter)
     else:

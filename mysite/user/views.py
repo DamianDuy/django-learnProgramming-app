@@ -1,6 +1,7 @@
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
+from learnProgramming.models import User_Answer
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
@@ -110,4 +111,11 @@ def display_all_profiles(request):
     context = {"Users": users}
     
     return render(request, "user/display_profiles.html", context)
+
+@login_required(login_url="/login/")
+def show_statistics(request):
+    #user_answer = get_object_or_404(User_Answer, user=request.user)
+    user_answer = User_Answer.objects.all()
+    context = {'User_answer': user_answer}
+    return render(request, "user/statistics.html", context)
     

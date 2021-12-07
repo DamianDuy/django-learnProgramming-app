@@ -107,6 +107,8 @@ class User_Answer(models.Model):
     answer = models.ManyToManyField(Answer, default=None)
     answered = models.BooleanField(default=False)
     answer_date = models.DateTimeField('answer date', null=True, default=None)
+    #
+    answer_time = models.FloatField(default=0)
 
     def __str__(self):
         answers = ""
