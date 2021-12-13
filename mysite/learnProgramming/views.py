@@ -1,4 +1,4 @@
-from datetime import datetime
+from django.utils import timezone
 import time
 
 from django import forms
@@ -512,7 +512,7 @@ def solve_test_view(request, test_slug, test_counter_id, question_id):
                 field_name = "answer" + str(counter+1)
                 if form.cleaned_data[field_name]:
                     user_answer.answer.add(answer)
-            user_answer.answer_date = datetime.now()
+            user_answer.answer_date = timezone.now()
             user_answer.answer_time = round(time.time() - start_time, 2)
             user_answer.save()
             return redirect_to_next_question_or_end(request, test, test_counter)
