@@ -58,6 +58,20 @@ class Question_Form(forms.Form):
     answer10 = forms.CharField(widget=forms.Textarea(attrs={'rows':1}), required=False)
     answer10_correct = forms.BooleanField(required=False)
 
+class Answer_Form_Radio(forms.Form):
+    CHOICES = []
+    #answer=forms.CharField(widget=forms.RadioSelect(choices=CHOICES))
+
+    answer = forms.ChoiceField(required=True, choices=CHOICES, widget=forms.RadioSelect())
+
+    def __init__(self, choices, *args, **kwargs):
+        super(Answer_Form_Radio, self).__init__(*args, **kwargs)
+        #self.fields['answer'].widget = forms.RadioSelect(choices=choices)
+        #self.CHOICES = choices.copy()
+        #self.fields['answer'].widget = forms.RadioSelect(choices=self.CHOICES)
+        self.fields["answer"].choices = choices
+        
+
 class Answer_Form(forms.Form):
     answer1 = forms.BooleanField(required=False)
     answer2 = forms.BooleanField(required=False)

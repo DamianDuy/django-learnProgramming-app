@@ -14,7 +14,8 @@
         {% if questions %}{% for question in questions %}
             <div class="container" style="max-width: 520px; border: 1px solid #6c757d; background-color: #f8f9fa; border-radius: 1.2rem;">
                 <p align="left">Question number: <b>{{question.question_number}}</b></p>
-                <p align="left">Question: <b>{{question.question_content}}</b></p>
+                <p align="left">Question:</p>
+                <p align="left" class="content-markdown"> {{question.question_content}}</p>
                 <p align="left">Max points: <b>{{question.max_points}}</b></p>
                 <p align="left">Test: <b>{{question.test.name}}</b></p>
                 <p align="left">Multi selection: <b>{{question.multi_selection}}</b></p>

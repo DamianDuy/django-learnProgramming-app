@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 from .models import *
-from .forms import Programming_Language_Form, Subject_Form, Test_Form, Question_Form, Answer_Form
+from .forms import Programming_Language_Form, Subject_Form, Test_Form, Question_Form, Answer_Form, Answer_Form_Radio
 
 # Create your views here.
 
@@ -467,7 +467,7 @@ def test_view(request, test_slug):
     )
 
 def redirect_to_next_question_or_end(request, test, test_counter):
-    user_answers = User_Answer.objects.filter(user=request.user, question__test=test, answer=None, answered=False)[:1]
+    user_answers = User_Answer.objects.filter(user=request.user, question__test=test, answer=None, answered=False, test_counter=test_counter)[:1]
     if user_answers.count() == 0:
         return redirect('/solved_test/' + test.slug + "/" + str(test_counter.id))
     return redirect('/solve_test/' + test.slug + "/" + str(test_counter.id) + "/" + str(user_answers[0].question.id))
@@ -481,9 +481,7 @@ def start_test_view(request, test_slug):
 
     test_counter, test_counter_created = Test_Counter.objects.get_or_create(user=request.user, test=test, counter=get_free_test_number(request.user, test))
 
-    print(test)
     questions = Question.objects.filter(test=test).order_by('question_number')[:test.questions_number]
-    print(questions)
     for question in questions:
         user_answer, created = User_Answer.objects.get_or_create(user=request.user, question=question, test_counter=test_counter)
         if not created:
@@ -498,43 +496,70 @@ def solve_test_view(request, test_slug, test_counter_id, question_id):
     question = get_object_or_404(Question, id=question_id)
     test_counter = get_object_or_404(Test_Counter, id=test_counter_id)
 
+    user_answers_count = User_Answer.objects.filter(user=request.user, question__test=test, answered=True, test_counter=test_counter).count()
+    print(user_answers_count)
+
     user_answers = User_Answer.objects.filter(user=request.user, question__test=test, answer=None, answered=False, test_counter=test_counter)
     if user_answers.count() == 0:
         return redirect('/solved_test/' + test.slug + "/" + str(test_counter.id))
 
     if request.method == 'POST':
-        form = Answer_Form(request.POST)
-        if form.is_valid():
-            user_answer =  User_Answer.objects.get(user=request.user, question=question, answer=None, answered=False, test_counter=test_counter)
-            user_answer.answered = True
-            answers = Answer.objects.filter(question=question)
-            for counter, answer in enumerate(answers):
-                field_name = "answer" + str(counter+1)
-                if form.cleaned_data[field_name]:
-                    user_answer.answer.add(answer)
-            user_answer.answer_date = timezone.now()
-            user_answer.answer_time = round(time.time() - start_time, 2)
-            user_answer.save()
-            return redirect_to_next_question_or_end(request, test, test_counter)
-    else:
-        form = Answer_Form()
-        answers = Answer.objects.filter(question=question)
-        counter = 1
-        for answer in answers:
-            field_name = "answer" + str(counter)
-            form.fields[field_name].label = answer.answer_content
-            counter = counter + 1
+        if question.multi_selection:
+            form = Answer_Form(request.POST)
+            if form.is_valid():
+                user_answer =  User_Answer.objects.get(user=request.user, question=question, answer=None, answered=False, test_counter=test_counter)
+                user_answer.answered = True
+                answers = Answer.objects.filter(question=question)
+                for counter, answer in enumerate(answers):
+                    field_name = "answer" + str(counter+1)
+                    if form.cleaned_data[field_name]:
+                        user_answer.answer.add(answer)
+                user_answer.answer_date = timezone.now()
+                user_answer.answer_time = round(time.time() - start_time, 2)
+                user_answer.save()
+                return redirect_to_next_question_or_end(request, test, test_counter)
+        else:
+            choices = []
+            answers = Answer.objects.filter(question=question).order_by("id")
+            for answer in answers:
+                choices.append((str(answer.id), answer.answer_content))
 
-        for index in range(counter, 11, 1):
-            field_name = "answer" + str(index)
-            form.fields[field_name].widget = forms.HiddenInput()
+            form = Answer_Form_Radio(choices, request.POST)
+            if form.is_valid():
+                answer_id = form.cleaned_data["answer"]
+                user_answer = User_Answer.objects.get(user=request.user, question=question, answer=None, answered=False, test_counter=test_counter)
+                user_answer.answered = True
+                user_answer.answer.add(Answer.objects.get(id=int(answer_id)))
+                user_answer.answer_date = timezone.now()
+                user_answer.answer_time = round(time.time() - start_time, 2)
+                user_answer.save()
+                return redirect_to_next_question_or_end(request, test, test_counter)
+                
+    else:
+        answers = Answer.objects.filter(question=question).order_by("id")
+        if question.multi_selection:
+            form = Answer_Form()
+            counter = 1
+            for answer in answers:
+                field_name = "answer" + str(counter)
+                form.fields[field_name].label = answer.answer_content
+                counter = counter + 1
+
+            for index in range(counter, 11, 1):
+                field_name = "answer" + str(index)
+                form.fields[field_name].widget = forms.HiddenInput()
+        else:
+            choices = []
+            for answer in answers:
+                choices.append((str(answer.id), answer.answer_content))
+            form = Answer_Form_Radio(choices=choices)
 
     return render(
         request, 
         'learnProgramming/solve_test.html', 
         {
             'form': form,
-            'number': test.questions_number - user_answers.count() + 1,
+            'number': user_answers_count + 1,
             'question': question,
             'messages': messages.get_messages(request),
         }
@@ -555,8 +580,10 @@ def get_points(user, test, test_counter):
                 correct_answers_number = get_correct_answer_number(user_answer.question)
                 user_correct_answers_number = 0
                 for answer in user_answer.answer.all():
-                    if user_answer.answer.all()[0].if_correct:
+                    if answer.if_correct:
                         user_correct_answers_number += 1
+                    else:
+                        user_correct_answers_number -= 1
                 if correct_answers_number == user_correct_answers_number:
                     user_points += question_point
             else:

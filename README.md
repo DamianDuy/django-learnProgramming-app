@@ -34,6 +34,7 @@ Installation of Django:
 
 ```
 $ python -m pip install Django
+$ python3 -m pip install django-markdownx
 ```
 
 ## Running a project
