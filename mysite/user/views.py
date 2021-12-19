@@ -115,7 +115,8 @@ def display_all_profiles(request):
 @login_required(login_url="/login/")
 def show_statistics(request):
     #user_answer = get_object_or_404(User_Answer, user=request.user)
-    user_answer = User_Answer.objects.all()
+    #user_answer = User_Answer.objects.all()
+    user_answer = User_Answer.objects.filter(user=request.user).order_by('-answer_time')
     context = {'User_answer': user_answer}
     return render(request, "user/statistics.html", context)
     

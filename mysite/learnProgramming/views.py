@@ -467,6 +467,8 @@ def test_view(request, test_slug):
     )
 
 def redirect_to_next_question_or_end(request, test, test_counter):
+    global start_time
+    start_time = time.time()
     user_answers = User_Answer.objects.filter(user=request.user, question__test=test, answer=None, answered=False, test_counter=test_counter)[:1]
     if user_answers.count() == 0:
         return redirect('/solved_test/' + test.slug + "/" + str(test_counter.id))
@@ -477,6 +479,8 @@ def get_free_test_number(user, test):
 
 @login_required(login_url='/login/')
 def start_test_view(request, test_slug):
+    global start_time
+    start_time = time.time()
     test = get_object_or_404(Test, slug=test_slug)
 
     test_counter, test_counter_created = Test_Counter.objects.get_or_create(user=request.user, test=test, counter=get_free_test_number(request.user, test))
@@ -491,7 +495,6 @@ def start_test_view(request, test_slug):
 
 @login_required(login_url='/login/')
 def solve_test_view(request, test_slug, test_counter_id, question_id):
-    start_time = time.time()
     test = get_object_or_404(Test, slug=test_slug)
     question = get_object_or_404(Question, id=question_id)
     test_counter = get_object_or_404(Test_Counter, id=test_counter_id)
