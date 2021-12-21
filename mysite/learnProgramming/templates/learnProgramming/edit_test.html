@@ -21,7 +21,11 @@
                 <p align="left">Multi selection: <b>{{question.multi_selection}}</b></p>
 
                 {% for answer in question.answer_set.all %}
-                    <p align="center">Answer: <b>{{answer.answer_content}}</b> {% if answer.if_correct %}<span class="glyphicon glyphicon-ok"></span>{% endif %}</p>
+                    <div class="container" style="max-width: 490px; border: 1px solid #6c757d; background-color: #aeccd4; border-radius: 1.2rem;">
+                        <p align="left">Answer:{% if answer.if_correct %}<span class="glyphicon glyphicon-ok"></span>{% endif %}</p>
+                        <p align="left" class="content-markdown"> {{answer.answer_content}}</p>
+                    </div>
+                    <br>
                 {% endfor %}
                 <p align="right"><a href="/edit_question/{{question.id}}" class="btn"><span class="glyphicon glyphicon-edit"></span> Edit</a></p>
             </div>

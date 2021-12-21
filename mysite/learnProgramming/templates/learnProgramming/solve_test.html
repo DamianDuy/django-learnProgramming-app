@@ -1,6 +1,7 @@
 {% extends "header/header.html" %}
 
 {% block midle_content %}
+<div class="container-fluid" style="overflow-y: scroll; height:80vh;">
     <br>
     <div class="container" style="max-width: 520px; border: 1px solid #6c757d; background-color: #f8f9fa; border-radius: 1.2rem;">
 
@@ -23,11 +24,25 @@
     {% if form %}
     <form method="post">
         {% csrf_token %}
-        {{form.as_p}}
+        {% for field in form %}
+            {{ field.errors }}
+            {% for elem in field %}
+            <p><label for={{ elem.id_for_label }}>
+                <table class="table borderless"><tbody>
+                    <tr>
+                        <td>{{ elem.tag }}</td>
+                        <td><span class="content-markdown">{{ elem.choice_label }}</span></td>
+                    </tr>
+                </tbody></table>
+            </label></p>
+            {% endfor%}
+            {{ field.help_text }}
+        {% endfor %}
 
         <button type="submit"><span class="glyphicon glyphicon-plus-sign"></span>Submit</button>
     </form>
     {% endif %}
     <br>
     </div>
+</div>    
 {% endblock %}
