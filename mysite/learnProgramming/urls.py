@@ -17,8 +17,8 @@ from django.urls import path
 
 from .views import programming_language_list_view, add_new_programming_language_view, delete_programming_language_view
 from .views import subjects_list_view, add_new_subject_view, delete_subject_view
-from .views import tests_list_view, add_new_test_view, delete_test_view, edit_test_view
-from .views import add_new_question_view, edit_question_view
+from .views import tests_list_view, add_new_test_view, delete_test_view, edit_test_view, edit_test_info_view
+from .views import add_new_question_view, edit_question_view, delete_question_view
 from .views import about_view, no_access_view
 from .views import test_view, start_test_view, solve_test_view, solved_test_view
 
@@ -36,10 +36,12 @@ urlpatterns = [
     path('add_new_test/<subject_slug>', add_new_test_view, name='add_new_test_view'),
     path('delete_test/<test_slug>', delete_test_view, name='delete_test_view'),
     path('edit_test/<test_slug>', edit_test_view, name='edit_test_view'),
-
+    path('edit_test_info/<test_id>', edit_test_info_view, name='edit_test_info_view'),
+    
     path('add_new_question/<test_slug>', add_new_question_view, name='add_new_question_view'),
     path('edit_question/<question_id>', edit_question_view, name='edit_question_view'),
-
+    path('delete_question/<question_id>', delete_question_view, name='delete_question_view'),
+    
     path('about.html', about_view, name='about_view'),
     path('no_access', no_access_view, name='no_access_view'),
 

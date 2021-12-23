@@ -5,10 +5,10 @@
     <br>
     <div class="container" style="max-width: 520px; border: 1px solid #6c757d; background-color: #f8f9fa; border-radius: 1.2rem;">
 
-    <p align="right">{{number}}/{{question.test.questions_number}}</p>
+    <p style="text-align:right;">{{number}}/{{question.test.questions_number}}</p>
 
-    <p align="left"><b>Question:</b></p>
-    <p align="left" class="content-markdown"> {{question.question_content}}</p>
+    <p style="text-align:left;"><b>Question:</b></p>
+    <p style="text-align:left;" class="content-markdown"> {{question.question_content}}</p>
 
     {% if messages %}
     <ul class="messages">
@@ -24,20 +24,34 @@
     {% if form %}
     <form method="post">
         {% csrf_token %}
-        {% for field in form %}
-            {{ field.errors }}
-            {% for elem in field %}
-            <p><label for={{ elem.id_for_label }}>
-                <table class="table borderless"><tbody>
-                    <tr>
-                        <td>{{ elem.tag }}</td>
-                        <td><span class="content-markdown">{{ elem.choice_label }}</span></td>
-                    </tr>
-                </tbody></table>
-            </label></p>
-            {% endfor%}
-            {{ field.help_text }}
-        {% endfor %}
+        {% if question.multi_selection %}
+            {% for field in form.visible_fields %}
+                {{ field.errors }}
+                <p ><label for={{ field.id_for_label }}>
+                    <table class="table borderless"><tbody>
+                        <tr>
+                            <td style="text-align:left; vertical-align:middle;">{{ field }}</td>
+                            <td style="text-align:left;"><span class="content-markdown">{{ field.label }}</span></td>
+                        </tr>
+                    </tbody></table>
+                </label></p>
+            {% endfor %}
+        {% else %}
+            {% for field in form %}
+                {{ field.errors }}
+                {% for elem in field %}
+                <p><label for={{ elem.id_for_label }}>
+                    <table class="table borderless"><tbody>
+                        <tr>
+                            <td style="text-align:left; vertical-align:middle;">{{ elem.tag }}</td>
+                            <td style="text-align:left;"><span class="content-markdown">{{ elem.choice_label }}</span></td>
+                        </tr>
+                    </tbody></table>
+                </label></p>
+                {% endfor%}
+                {{ field.help_text }}
+            {% endfor %}
+        {% endif %}
 
         <button type="submit"><span class="glyphicon glyphicon-plus-sign"></span>Submit</button>
     </form>

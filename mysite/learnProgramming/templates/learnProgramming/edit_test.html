@@ -7,27 +7,54 @@
         <p>Subject: <b>{{test.subject.name}}</b></p>
         <p>Test: <b>{{test.name}}</b></p>
         <p>Questions number: <b>{{test.questions_number}}</b></p>
+        <p>Test threshold: <b>{{test.threshold}}</b></p>
+        <a href="/edit_test_info/{{test.id}}" class="btn"><span class="glyphicon glyphicon-edit"></span> Edit</a>
         <br>
         {% if user.is_superuser or user.profile.canCreate %}
             <a href="/add_new_question/{{test.slug}}"><span class="glyphicon glyphicon-plus-sign"></span> Add a new question</a>
         {% endif %}
         {% if questions %}{% for question in questions %}
             <div class="container" style="max-width: 520px; border: 1px solid #6c757d; background-color: #f8f9fa; border-radius: 1.2rem;">
-                <p align="left">Question number: <b>{{question.question_number}}</b></p>
-                <p align="left">Question:</p>
-                <p align="left" class="content-markdown"> {{question.question_content}}</p>
-                <p align="left">Max points: <b>{{question.max_points}}</b></p>
-                <p align="left">Test: <b>{{question.test.name}}</b></p>
-                <p align="left">Multi selection: <b>{{question.multi_selection}}</b></p>
+                <p style="text-align:left;">Question number: <b>{{question.question_number}}</b></p>
+                <p style="text-align:left;">Question:</p>
+                <p style="text-align:left;" class="content-markdown"> {{question.question_content}}</p>
+                <p style="text-align:left;">Max points: <b>{{question.max_points}}</b></p>
+                <p style="text-align:left;">Test: <b>{{question.test.name}}</b></p>
+                <p style="text-align:left;">Multi selection: <b>{{question.multi_selection}}</b></p>
 
                 {% for answer in question.answer_set.all %}
                     <div class="container" style="max-width: 490px; border: 1px solid #6c757d; background-color: #aeccd4; border-radius: 1.2rem;">
-                        <p align="left">Answer:{% if answer.if_correct %}<span class="glyphicon glyphicon-ok"></span>{% endif %}</p>
-                        <p align="left" class="content-markdown"> {{answer.answer_content}}</p>
+                        <p style="text-align:left;">Answer:{% if answer.if_correct %}<span class="glyphicon glyphicon-ok"></span>{% endif %}</p>
+                        <p style="text-align:left;" class="content-markdown"> {{answer.answer_content}}</p>
                     </div>
                     <br>
                 {% endfor %}
-                <p align="right"><a href="/edit_question/{{question.id}}" class="btn"><span class="glyphicon glyphicon-edit"></span> Edit</a></p>
+                <p style="text-align:right;">
+                    <a href="/edit_question/{{question.id}}" class="btn"><span class="glyphicon glyphicon-edit"></span> Edit</a>
+
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#{{question.id}}Modal"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+
+                    <div class="modal fade" id="{{question.id}}Modal" tabindex="-1" role="dialog" aria-labelledby="{{question.id}}ModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="{{question.id}}ModalLabel">Delete</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    You are going to delete <b>{{question.name}}</b> question. Press Delete to continue.
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    <a href="/delete_question/{{question.id}}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </p>
+
             </div>
             <br>
         {% endfor %}{% endif %}

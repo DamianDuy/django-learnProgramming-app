@@ -179,6 +179,42 @@ def add_new_test_view(request, subject_slug):
     )
 
 @login_required(login_url='/login/')
+def edit_test_info_view(request, test_id):
+    if can_create(request.user) == False:
+        return redirect("/no_access")
+
+    test = get_object_or_404(Test, id=test_id)
+
+    if request.method == 'POST':
+        form = Test_Form(request.POST)
+        if form.is_valid():
+            test.name = form.cleaned_data['name']
+            test.test_description = form.cleaned_data['test_description']
+            test.threshold = form.cleaned_data['threshold']
+            test.questions_number = form.cleaned_data['questions_number']
+            test.save()
+
+            return redirect('/edit_test/' + test.slug)
+    else:
+        initial={
+            'name': test.name,
+            'test_description': test.test_description,
+            'threshold': test.threshold,
+            'questions_number': test.questions_number,
+        }
+ 
+        form = Test_Form(initial=initial)
+
+    return render(
+        request, 
+        'learnProgramming/edit_test_info.html', 
+        {
+            'form': form,
+            'messages': messages.get_messages(request),
+        }
+    )
+
+@login_required(login_url='/login/')
 def delete_test_view(request, test_slug):
     if not request.user.is_superuser:
         return redirect("/no_access")
@@ -454,6 +490,17 @@ def edit_question_view(request, question_id):
     )
 
 @login_required(login_url='/login/')
+def delete_question_view(request, question_id):
+    if can_create(request.user) == False:
+        return redirect("/no_access")
+
+    question = get_object_or_404(Question, id=question_id)
+    path = '/edit_test/' + question.test.slug
+    question.delete()
+
+    return redirect(path)
+
+@login_required(login_url='/login/')
 def test_view(request, test_slug):
     test = get_object_or_404(Test, slug=test_slug)
 
@@ -477,6 +524,10 @@ def redirect_to_next_question_or_end(request, test, test_counter):
 def get_free_test_number(user, test):
     return Test_Counter.objects.filter(user=user, test=test).count() + 1
 
+def question_feeder(test):
+    questions = Question.objects.filter(test=test).order_by('question_number')
+    return random.sample(list(questions), test.questions_number)
+
 @login_required(login_url='/login/')
 def start_test_view(request, test_slug):
     global start_time
@@ -485,7 +536,7 @@ def start_test_view(request, test_slug):
 
     test_counter, test_counter_created = Test_Counter.objects.get_or_create(user=request.user, test=test, counter=get_free_test_number(request.user, test))
 
-    questions = Question.objects.filter(test=test).order_by('question_number')[:test.questions_number]
+    questions = question_feeder(test)
     for question in questions:
         user_answer, created = User_Answer.objects.get_or_create(user=request.user, question=question, test_counter=test_counter)
         if not created:
