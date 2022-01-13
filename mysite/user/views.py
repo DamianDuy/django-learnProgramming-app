@@ -112,11 +112,18 @@ def display_all_profiles(request):
     
     return render(request, "user/display_profiles.html", context)
 
-@login_required(login_url="/login/")
-def show_statistics(request):
-    #user_answer = get_object_or_404(User_Answer, user=request.user)
-    #user_answer = User_Answer.objects.all()
+def time_chart(request):
+    labels = []
+    data = []
+
     user_answer = User_Answer.objects.filter(user=request.user).order_by('-answer_time')
-    context = {'User_answer': user_answer}
-    return render(request, "user/statistics.html", context)
+    user_answer_6 = user_answer[:6]
+    for answer in user_answer:
+        labels.append(answer.question.question_content)
+        data.append(answer.answer_time)
+
+    context = {
+        'data': user_answer,
+    }
     
+    return render(request, 'user/statistics.html', context)
