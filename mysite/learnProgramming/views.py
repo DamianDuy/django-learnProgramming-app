@@ -526,7 +526,10 @@ def get_free_test_number(user, test):
 
 def question_feeder(test):
     questions = Question.objects.filter(test=test).order_by('question_number')
-    return random.sample(list(questions), test.questions_number)
+    number = test.questions_number
+    if questions.count() < number:
+        number = questions.count()
+    return random.sample(list(questions), number)
 
 @login_required(login_url='/login/')
 def start_test_view(request, test_slug):
@@ -626,6 +629,7 @@ def get_points(user, test, test_counter):
     user_answers = User_Answer.objects.filter(user=user, question__test=test, test_counter=test_counter)
     user_points = 0
     test_points = 0
+    failed_questions = []
     for user_answer in user_answers:
         question_point = user_answer.question.max_points
         test_points += question_point
@@ -640,10 +644,14 @@ def get_points(user, test, test_counter):
                         user_correct_answers_number -= 1
                 if correct_answers_number == user_correct_answers_number:
                     user_points += question_point
+                else:
+                    failed_questions.append(user_answer.answer.all()[0].question)
             else:
                 if user_answer.answer.all()[0].if_correct:
                     user_points += question_point
-    return user_points, test_points
+                else:
+                    failed_questions.append(user_answer.answer.all()[0].question)
+    return user_points, test_points, failed_questions
 
 def check_if_test_passed(user_points, test_points, threshold):
     user_result = int(100*user_points/test_points)
@@ -656,7 +664,7 @@ def solved_test_view(request, test_slug, test_counter_id):
     test = get_object_or_404(Test, slug=test_slug)
     test_counter = get_object_or_404(Test_Counter, id=test_counter_id)
 
-    user_points, test_points = get_points(request.user, test, test_counter)
+    user_points, test_points, failed_questions = get_points(request.user, test, test_counter)
     test_status, user_result = check_if_test_passed(user_points, test_points, test.threshold)
 
     return render(
@@ -668,5 +676,6 @@ def solved_test_view(request, test_slug, test_counter_id):
             'test_points': test_points,
             'test_status': test_status,
             'user_result': user_result,
+            'failed_questions': failed_questions,
         }
     )

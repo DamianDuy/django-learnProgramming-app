@@ -14,6 +14,13 @@
         {% else %}
             <p>Unfortunately you did not pass this test. It is recommended to study the subject and retake the test.</p>
         {% endif %}
+
+        {% if failed_questions %}
+            <h2>Failed questions:</h2>
+            {% for question in failed_questions %}
+                <p>{{question.question_content}}</p>
+            {% endfor %}
+        {% endif %}
         <br>
     </div>
 {% endblock %} 
