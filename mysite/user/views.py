@@ -118,12 +118,13 @@ def time_chart(request):
 
     user_answer = User_Answer.objects.filter(user=request.user).order_by('-answer_time')
     user_answer_6 = user_answer[:6]
-    for answer in user_answer:
-        labels.append(answer.question.question_content)
+    for answer in user_answer_6:
+        labels.append([answer.question.question_number, answer.question.test.name])
         data.append(answer.answer_time)
 
     context = {
-        'data': user_answer,
+        'labels': labels,
+        'data': data,
     }
     
     return render(request, 'user/statistics.html', context)

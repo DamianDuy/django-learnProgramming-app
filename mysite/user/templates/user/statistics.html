@@ -4,21 +4,24 @@
   <div id="container"  style="width: 55%; margin:0 auto;" >
     <h3 class="font-italic text-center">Statistic for question time</h3>
     <canvas id="myChart" width="200" height="200"></canvas>
-  </div>
+</div>
 
   
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
   <script>
+    // too long labels
+    const labels_tmp = [{% for l, k in labels %}'Question{{ l }} {{ k }}', {% endfor %}];
+    const labelsAdjusted = labels_tmp.map(label => label.split(' '));
+
     const ctx = document.getElementById('myChart').getContext('2d');
     const myChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: [{% for answer in data %}'{{ answer.question.question_content }}', {% endfor %}],
-            //labels:  {{labels}},
+            labels:  labelsAdjusted,
             datasets: [{
                 label: '# of Seconds',
-                data: [{% for answer in data %}'{{ answer.answer_time }}', {% endfor %}],
+                data: [{% for d in data %}'{{ d }}', {% endfor %}],
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
