@@ -1,7 +1,7 @@
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from learnProgramming.models import User_Answer
+from learnProgramming.models import User_Answer, Answer
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
@@ -112,6 +112,11 @@ def display_all_profiles(request):
     
     return render(request, "user/display_profiles.html", context)
 
+@login_required(login_url="/login/")
+def statistics(request):
+    return render(request, 'user/statistics.html')
+
+@login_required(login_url="/login/")
 def time_chart(request):
     labels = []
     data = []
@@ -127,4 +132,36 @@ def time_chart(request):
         'data': data,
     }
     
-    return render(request, 'user/statistics.html', context)
+    return render(request, 'user/statistics_time-chart.html', context)
+
+def get_correct_answer_number(question):
+    return Answer.objects.filter(question=question, if_correct=True).count()
+
+@login_required(login_url="/login/")
+def correctness_chart(request):
+    correct = 0 
+    incorrect = 0
+
+    user_answers = User_Answer.objects.filter(user=request.user)
+    for user_answer in user_answers:
+        if user_answer.answered:
+            if user_answer.question.multi_selection:
+                correct_answers_number = get_correct_answer_number(user_answer.question)
+                user_correct_answers_number = 0
+                for answer in user_answer.answer.all():
+                    if answer.if_correct:
+                        correct += 1
+                    else:
+                        incorrect +=1
+            else:
+                if user_answer.answer.all()[0].if_correct:
+                    correct += 1
+                else:
+                    incorrect +=1
+
+    context = {
+        'correct': correct,
+        'incorrect': incorrect,
+    }
+    
+    return render(request, 'user/statistics_correctness-chart.html', context)
