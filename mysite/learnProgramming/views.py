@@ -354,7 +354,7 @@ def add_new_question_view(request, test_slug):
                         )
 
                 if not question_created:
-                    messages.error(request, 'Question with the provided paramters already exists. Create a new one.')
+                    messages.error(request, 'Question with the provided parameters already exists. Create a new one.')
                 else:
                     return redirect('/edit_test/' + test.slug)
     else:
