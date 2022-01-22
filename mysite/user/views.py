@@ -165,3 +165,24 @@ def correctness_chart(request):
     }
     
     return render(request, 'user/statistics_correctness-chart.html', context)
+
+@login_required(login_url="/login/")
+def test_attempt_chart(request):
+    all_tests = []
+    test_attempt = []
+
+    user_answer = User_Answer.objects.filter(user=request.user)
+    for answer in user_answer:
+        all_tests.append(answer.question.test)
+
+    # {testNr: number of attempt}
+    test_dict = dict((x,all_tests.count(x)/x.questions_number) for x in set(all_tests))
+
+    for t, num in test_dict.items():
+        test_attempt.append([t.name, num])
+
+    context = {
+        'test_attempt': test_attempt,
+    }
+    
+    return render(request, 'user/statistics_test_attempt-chart.html', context)
