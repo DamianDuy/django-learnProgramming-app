@@ -2,7 +2,7 @@
 
 {% block midle_content %}
   <div id="container"  style="width: 55%; margin:0 auto;" >
-    <h3 class="font-italic text-center">Statistic for test attempt</h3>
+    <h3 class="font-italic text-center">Statistic for number of test attempts</h3>
     <canvas id="myChart" width="200" height="200"></canvas>
 </div>
 
@@ -16,7 +16,7 @@
         data: {
             labels:  [{% for l, k in test_attempt %}'{{ l }}', {% endfor %}],
             datasets: [{
-                label: '# of Seconds',
+                label: '# of Attempts',
                 data: [{% for l, k in test_attempt %}'{{ k }}', {% endfor %}],
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
@@ -39,9 +39,11 @@
         },
         options: {
             scales: {
-                y: {
-                    beginAtZero: true
-                }
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
             }
         }
     });
