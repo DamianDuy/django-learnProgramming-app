@@ -14,18 +14,18 @@ It can also be used by programming courses' creators to check what topics are mo
 
 **Technology stack:<br />**
 - Django framework<br />
-- Seaborn Python library for data visualization (the library's capabilities will be researched)
+- Chart.js JavaScript library for data visualization (the library's capabilities will be researched)
 
 **Detailed list of functionalities:<br />**
 - The user must create an account to be able to solve tests and add opinions<br />
 - The user solves tests to progress<br />
 - The user can evaluate the difficulty of the given topic<br />
-- The user can create groups and see the progress of other users in the group<br />
-- In each topic, the amount of students who passed it, will be visible<br />
+- The user can create groups and see the progress of other users in the group - TO DO<br />
+- In each topic, the amount of students who passed it, will be visible - TO DO<br />
 - The administrator adds tests and learning topics<br />
 
 **Research topics:<br />**
-- The capabilities of Seaborn Python library
+- The capabilities of Chart.js JavaScript library
 - The statistics connected with the evaluation of the learning topics by users
 
 # Setup
