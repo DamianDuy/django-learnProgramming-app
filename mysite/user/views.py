@@ -22,7 +22,7 @@ def signup(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=user.username, password=raw_password)
             login(request, user)
-            return redirect('programming_language_list_view')
+            return redirect('/')
     else:
         form = SignUpForm()
     context = {'form': form}
