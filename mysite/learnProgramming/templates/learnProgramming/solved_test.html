@@ -2,10 +2,10 @@
 
 {% block midle_content %}
     <br>
-    <div class="container" style="max-width: 520px; border: 1px solid #6c757d; background-color: #f8f9fa; border-radius: 1.2rem;">
+    <div class="container" style="overflow-y: scroll; height:80vh; max-width: 520px; border: 1px solid #6c757d; background-color: #f8f9fa; border-radius: 1.2rem;">
         <h1>{{test.name}}</h1>
 
-        <p>{{test.test_description}}</p>
+        <p >{{test.test_description}}</p>
 
         <p>You got <b>{{user_points}}</b> out of <b>{{test_points}}</b> points in this test ({{user_result}}%).</p>
 
@@ -18,7 +18,7 @@
         {% if failed_questions %}
             <h2>Failed questions:</h2>
             {% for question in failed_questions %}
-                <p>{{question.question_content}}</p>
+                <p class="content-markdown">{{question.question_content}}</p>
             {% endfor %}
         {% endif %}
         <br>
