@@ -5,6 +5,8 @@ from django.utils.safestring import mark_safe
 
 class SignUpForm(UserCreationForm):
 
+    email = forms.EmailField(max_length=254, help_text='Required. Provide a valid email address.')
+
     class Meta:
         model = User
         fields = ('username', 'email', 'password1', 'password2', )
@@ -18,3 +20,6 @@ class UserForm(forms.ModelForm):
 class DeleteAccountForm(forms.Form):
     username = forms.CharField()
     notification = forms.BooleanField(label=mark_safe("I wish to delete my account"))
+
+class ActivationAccountForm(forms.Form):
+    email = forms.BooleanField()

@@ -554,7 +554,6 @@ def solve_test_view(request, test_slug, test_counter_id, question_id):
     test_counter = get_object_or_404(Test_Counter, id=test_counter_id)
 
     user_answers_count = User_Answer.objects.filter(user=request.user, question__test=test, answered=True, test_counter=test_counter).count()
-    print(user_answers_count)
 
     user_answers = User_Answer.objects.filter(user=request.user, question__test=test, answer=None, answered=False, test_counter=test_counter)
     if user_answers.count() == 0:

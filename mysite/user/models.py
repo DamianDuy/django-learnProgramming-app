@@ -8,6 +8,9 @@ from django.utils.text import slugify
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     canCreate = models.BooleanField(default=False)
+    email_confirmed = models.BooleanField(default=False)
+    rodo_confirmed = models.BooleanField(default=False)
+    terms_and_conditions_confirmed = models.BooleanField(default=False)
 
     def __str__(self):
       return self.user.username
