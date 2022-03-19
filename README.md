@@ -35,6 +35,7 @@ Installation of Django:
 ```
 $ python -m pip install Django
 $ python -m pip install django-markdownx
+$ python -m pip install django-utils-six
 ```
 
 ## Running a project
