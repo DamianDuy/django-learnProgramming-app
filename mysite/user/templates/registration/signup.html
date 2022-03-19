@@ -8,6 +8,13 @@
     <form method="post">
       {% csrf_token %}
       {% for field in form %}
+      {% if 'id_rodo_confirmed' in field.id_for_label or 'id_terms_and_conditions' in field.id_for_label %}
+        <p><label for="field.id_for_label">
+          {{field}}
+          {{field.label}}
+          {{field.errors}}
+        </label></p>
+      {% else %}
         <p>
           {{ field.label_tag }}
           {{ field }}
@@ -15,6 +22,7 @@
             <p style="color: red">{{ error }}</p>
           {% endfor %}
         </p>
+      {% endif %}
       {% endfor %}
       <button type="submit">Sign up</button>
     </form>
