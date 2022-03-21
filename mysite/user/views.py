@@ -189,6 +189,7 @@ def my_statistics(request):
 def users_statistics(request):
     return render(request, 'user/users_statistics.html')
 
+# MY STATISTICS
 @login_required(login_url="/login/")
 def time_chart(request):
     labels = []
@@ -259,3 +260,33 @@ def test_attempt_chart(request):
     }
     
     return render(request, 'user/statistics_test_attempt-chart.html', context)
+
+# USERS STATISTICS
+@login_required(login_url="/login/")
+def incorrect_answers_chart(request):
+    incorrect_answers = []
+    data = []
+
+    user_answers = User_Answer.objects.all()
+    for user_answer in user_answers:
+        if user_answer.answered:
+            if user_answer.question.multi_selection:
+                correct_answers_number = get_correct_answer_number(user_answer.question)
+                for answer in user_answer.answer.all():
+                    if not answer.if_correct:
+                        incorrect_answers.append(user_answer.question.test.name)
+            else:
+                if not user_answer.answer.all()[0].if_correct:
+                    incorrect_answers.append(user_answer.question.test.name)
+
+
+    answer_dict = {i:incorrect_answers.count(i) for i in incorrect_answers}
+
+    for name, num in answer_dict.items():
+        data.append([name, num])
+
+    context = {
+        'data': data,
+    }
+    
+    return render(request, 'user/statistics_incorrect_answers-chart.html', context)

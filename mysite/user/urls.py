@@ -23,6 +23,5 @@ urlpatterns = [
     path("user/my_statistics/time-chart/", views.time_chart, name = "time-chart"),
     path("user/my_statistics/correctness-chart/", views.correctness_chart, name = "correctness-chart"),
     path("user/my_statistics/test_attempt-chart/", views.test_attempt_chart, name = "test_attempt-chart"),
-
-
+    path("user/users_statistics/statistics_incorrect_answers-chart/", views.incorrect_answers_chart, name = "incorrect_answers_chart"),
 ]
