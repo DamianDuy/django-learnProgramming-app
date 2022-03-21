@@ -1,0 +1,16 @@
+{% extends "header/header.html" %}
+
+{% block midle_content %}
+    <div class="container-fluid" style="overflow-y: scroll; height:80vh;">
+        <h3 class="font-italic text-center">STATISTICS</h3>
+        <br>
+        <a class="btn btn-default"  href="/user/my_statistics/time-chart/" role="button">Answer time</a>
+        <br>
+        <br> 
+        <a class="btn btn-default"  href="/user/my_statistics/correctness-chart/" role="button">Answer correctness</a> 
+        <br>
+        <br>
+        <a class="btn btn-default"  href="/user/my_statistics/test_attempt-chart/" role="button">Test attempt</a> 
+
+    </div>
+{% endblock %}

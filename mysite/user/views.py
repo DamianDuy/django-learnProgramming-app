@@ -182,6 +182,14 @@ def statistics(request):
     return render(request, 'user/statistics.html')
 
 @login_required(login_url="/login/")
+def my_statistics(request):
+    return render(request, 'user/my_statistics.html')
+
+@login_required(login_url="/login/")
+def users_statistics(request):
+    return render(request, 'user/users_statistics.html')
+
+@login_required(login_url="/login/")
 def time_chart(request):
     labels = []
     data = []
