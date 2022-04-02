@@ -17,11 +17,10 @@ urlpatterns = [
     path("user/statistics/", views.statistics, name = "statistics"),
     path("user/my_statistics/", views.my_statistics, name = "my_statistics"),
     path("user/users_statistics/", views.users_statistics, name = "users_statistics"),
-    #path("user/statistics/time-chart/", views.time_chart, name = "time-chart"),
-    #path("user/statistics/correctness-chart/", views.correctness_chart, name = "correctness-chart"),
-    #path("user/statistics/test_attempt-chart/", views.test_attempt_chart, name = "test_attempt-chart"),
     path("user/my_statistics/time-chart/", views.time_chart, name = "time-chart"),
     path("user/my_statistics/correctness-chart/", views.correctness_chart, name = "correctness-chart"),
     path("user/my_statistics/test_attempt-chart/", views.test_attempt_chart, name = "test_attempt-chart"),
     path("user/users_statistics/statistics_incorrect_answers-chart/", views.incorrect_answers_chart, name = "incorrect_answers_chart"),
+    path("user/users_statistics/statistics_users_attempt-chart/", views.users_attempt_chart, name = "users_attempt-chart"),
+    path("user/users_statistics/statistics_users_all_attempts-chart/", views.users_all_attempts_chart, name = "users_all_attempts-chart"),
 ]

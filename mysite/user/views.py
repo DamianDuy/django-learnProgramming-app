@@ -290,3 +290,53 @@ def incorrect_answers_chart(request):
     }
     
     return render(request, 'user/statistics_incorrect_answers-chart.html', context)
+
+# statistic for how many users attempted test (only one attempt to a test)
+@login_required(login_url="/login/")
+def users_attempt_chart(request):
+    all_tests = []
+    one_attempt = []
+    users_attempt = []
+    tmp = []
+
+    user_answer = User_Answer.objects.all()
+    for answer in user_answer:
+        all_tests.append([answer.question.test.name, answer.user.username])
+
+    # only one attempt
+    one_attempt = [list(tupl) for tupl in {tuple(i) for i in all_tests }]
+
+    for name, user in one_attempt:
+        tmp.append(name)
+
+    users_attempt_dict = dict((x,tmp.count(x)) for x in set(tmp))
+
+    for name, num in users_attempt_dict.items():
+        users_attempt.append([name, num])
+
+    context = {
+        'users_attempt': users_attempt,
+    }
+    
+    return render(request, 'user/statistics_users_attempt-chart.html', context)
+
+@login_required(login_url="/login/")
+def users_all_attempts_chart(request):
+    all_tests = []
+    test_attempt = []
+
+    user_answer = User_Answer.objects.all()
+    for answer in user_answer:
+        all_tests.append(answer.question.test)
+
+    # {testNr: number of attempt}
+    test_dict = dict((x,all_tests.count(x)/x.questions_number) for x in set(all_tests))
+
+    for t, num in test_dict.items():
+        test_attempt.append([t.name, num])
+
+    context = {
+        'test_attempt': test_attempt,
+    }
+    
+    return render(request, 'user/statistics_users_all_attempts-chart.html', context)
