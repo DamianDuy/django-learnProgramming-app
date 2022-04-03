@@ -16,7 +16,7 @@
         data: {
             labels:  [{% for l, k in users_attempt %}'{{ l }}', {% endfor %}],
             datasets: [{
-                label: '# of Attempts',
+                label: '# of Users',
                 data: [{% for l, k in users_attempt %}'{{ k }}', {% endfor %}],
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
