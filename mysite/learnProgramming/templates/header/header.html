@@ -67,7 +67,9 @@
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
         <li class="active"><a href="/">Home</a></li>
-        <li><a href="{% url 'learnProgramming:about_view'%}">About</a></li> 
+        <li><a href="/info/about">About</a></li>
+        <li><a href="/info/gdpr">GDPR</a></li>
+        <li><a href="/info/terms_and_conditions">Terms and Conditions</a></li>   
       </ul>
       <ul class="nav navbar-nav navbar-right">
         {% if user.is_authenticated %}
