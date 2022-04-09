@@ -4,37 +4,46 @@ from .models import GDPR, About, Terms_And_Conditions
 
 # Create your views here.
 def gdpr_view(request):
-    gdpr = GDPR.objects.all()[0]
+    gdpr = GDPR.objects.all()
+    content = ""
+    if gdpr:
+        content = gdpr[0].content
 
     return render(
         request, 
         'common/common.html', 
         {
             'title': 'GDPR',
-            'message': gdpr.content,
+            'message': content,
         }
     )
 
 def terms_and_conditions_view(request):
-    terms_and_conditions = Terms_And_Conditions.objects.all()[0]
+    terms_and_conditions = Terms_And_Conditions.objects.all()
+    content = ""
+    if terms_and_conditions:
+        content = terms_and_conditions[0].content
 
     return render(
         request, 
         'common/common.html', 
         {
             'title': 'Terms and Conditions',
-            'message': terms_and_conditions.content,
+            'message': content,
         }
     )
 
 def about_view(request):
-    about = About.objects.all()[0]
+    about = About.objects.all()
+    content = ""
+    if about:
+        content = about[0].content
 
     return render(
         request, 
         'common/common.html', 
         {
             'title': 'About',
-            'message': about.content,
+            'message': content,
         }
     )

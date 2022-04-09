@@ -44,4 +44,12 @@ To run this project, change directory to directory where manage.py file is and r
 ```
 $ python manage.py runserver
 ```
+
+## Running tests
+To run unit tests, change directory to directory where manage.py file is and run a command:
+
+```
+$ python manage.py test
+```
+
 Now that the server’s running, visit http://127.0.0.1:8000/ with your Web browser. 
