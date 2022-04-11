@@ -112,3 +112,92 @@ class AnswerTest(TestCase):
         self.assertEqual(AnswerObj.answer_content, "test answer content")
         self.assertEqual(AnswerObj.question, QuestionObj)
         self.assertEqual(AnswerObj.if_correct, True)
+
+class TestCounterTest(TestCase):
+    def setUp(self) -> None:
+        UserObj1 = User.objects.create(username='test_username', password='test_password', email="test_email@test.com")
+        User1 = User.objects.get(id=1)
+        ProgrammingLangObj1 = Programming_Language.objects.create(name="test name", slug="test slug", icon="test icon")
+        ProgrammingLang1 = Programming_Language.objects.get(id=1)
+        SubjectObj1 = Subject.objects.create(name="test name", author = User1, programming_lang = ProgrammingLang1, slug="test slug")
+        SubjectObj = Subject.objects.get(id=1)
+        TestObj1 = Test.objects.create(name = 'test name', subject = SubjectObj, slug = 'test slug', author = User1,
+                test_description= 'test description', questions_number = 50, threshold = 50)
+        TestObj = Test.objects.get(id=1)
+        TestCounterObj1 = Test_Counter.objects.create(user = User1, test = TestObj, counter = 5)
+        #return super().setUp()
+    def test_test_counter(self):
+        TestObj = Test.objects.get(id=1)
+        User1 = User.objects.get(id=1)
+        TestCounterObj = Test_Counter.objects.get(id=1)
+
+        self.assertEqual(TestCounterObj.user, User1)
+        self.assertEqual(TestCounterObj.test, TestObj)
+        self.assertEqual(TestCounterObj.counter, 5)
+
+class SubjectPointTest(TestCase):
+    def setUp(self) -> None:
+        UserObj1 = User.objects.create(username='test_username', password='test_password', email="test_email@test.com")
+        User1 = User.objects.get(id=1)
+        ProgrammingLangObj1 = Programming_Language.objects.create(name="test name", slug="test slug", icon="test icon")
+        ProgrammingLang1 = Programming_Language.objects.get(id=1)
+        SubjectObj1 = Subject.objects.create(name="test name", author = User1, programming_lang = ProgrammingLang1, slug="test slug")
+        SubjectObj = Subject.objects.get(id=1)
+        SubjectPointObj1 = Subject_Point.objects.create(user = User1, subject = SubjectObj, subject_points_received = 5)
+        #return super().setUp()
+    def test_subject_point(self):
+        SubjectObj = Subject.objects.get(id=1)
+        User1 = User.objects.get(id=1)
+        SubjectPointObj = Subject_Point.objects.get(id=1)
+
+        self.assertEqual(SubjectPointObj.user, User1)
+        self.assertEqual(SubjectPointObj.subject, SubjectObj)
+        self.assertEqual(SubjectPointObj.subject_points_received, 5)
+
+class TestPointTest(TestCase):
+    def setUp(self) -> None:
+        UserObj1 = User.objects.create(username='test_username', password='test_password', email="test_email@test.com")
+        User1 = User.objects.get(id=1)
+        ProgrammingLangObj1 = Programming_Language.objects.create(name="test name", slug="test slug", icon="test icon")
+        ProgrammingLang1 = Programming_Language.objects.get(id=1)
+        SubjectObj1 = Subject.objects.create(name="test name", author = User1, programming_lang = ProgrammingLang1, slug="test slug")
+        SubjectObj = Subject.objects.get(id=1)
+        TestObj1 = Test.objects.create(name = 'test name', subject = SubjectObj, slug = 'test slug', author = User1,
+                test_description= 'test description', questions_number = 50, threshold = 50)
+        TestObj = Test.objects.get(id=1)
+        TestPointObj1 = Test_Point.objects.create(user = User1, test = TestObj, test_points_received = 6)
+        #return super().setUp()
+    def test_test_point(self):
+        TestObj = Test.objects.get(id=1)
+        User1 = User.objects.get(id=1)
+        TestPointObj = Test_Point.objects.get(id=1)
+
+        self.assertEqual(TestPointObj.user, User1)
+        self.assertEqual(TestPointObj.test, TestObj)
+        self.assertEqual(TestPointObj.test_points_received, 6)
+
+class QuestionPointTest(TestCase):
+    def setUp(self) -> None:
+        UserObj1 = User.objects.create(username='test_username', password='test_password', email="test_email@test.com")
+        User1 = User.objects.get(id=1)
+        ProgrammingLangObj1 = Programming_Language.objects.create(name="test name", slug="test slug", icon="test icon")
+        ProgrammingLang1 = Programming_Language.objects.get(id=1)
+        SubjectObj1 = Subject.objects.create(name="test name", author = User1, programming_lang = ProgrammingLang1, slug="test slug")
+        SubjectObj = Subject.objects.get(id=1)
+        TestObj1 = Test.objects.create(name = 'test name', subject = SubjectObj, slug = 'test slug', author = User1,
+                test_description= 'test description', questions_number = 50, threshold = 50)
+        TestObj = Test.objects.get(id=1)
+        QuestionObj1 = Question.objects.create(question_number = 5, question_content = "test question content", max_points = 10,
+                                               test = TestObj, multi_selection = False)
+        QuestionObj = Question.objects.get(id=1)
+        QuestionPointObj1 = Question_Point.objects.create(user = User1, question = QuestionObj, question_points_received = 9)
+        
+        #return super().setUp()
+    def test_question_point(self):
+        QuestionObj = Question.objects.get(id=1)
+        User1 = User.objects.get(id=1)
+        QuestionPointObj = Question_Point.objects.get(id=1)
+
+        self.assertEqual(QuestionPointObj.user, User1)
+        self.assertEqual(QuestionPointObj.question, QuestionObj)
+        self.assertEqual(QuestionPointObj.question_points_received, 9)
