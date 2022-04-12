@@ -91,3 +91,29 @@ class QuestionFormTest(TestCase):
         self.assertEqual(form1.cleaned_data['multi_selection'], False)
         self.assertEqual(form1.cleaned_data['answer1'], 'test answer')
         self.assertEqual(form1.cleaned_data['answer1_correct'], True)
+
+class AnswerFormTest(TestCase):
+    def test_required_fields(self):
+        form = Answer_Form()
+        self.assertFalse(form.fields['answer1'].required)
+        self.assertFalse(form.fields['answer2'].required)
+        self.assertFalse(form.fields['answer3'].required)
+        self.assertFalse(form.fields['answer4'].required)
+        self.assertFalse(form.fields['answer5'].required)
+        self.assertFalse(form.fields['answer6'].required)
+        self.assertFalse(form.fields['answer7'].required)
+        self.assertFalse(form.fields['answer8'].required)
+        self.assertFalse(form.fields['answer9'].required)
+        self.assertFalse(form.fields['answer10'].required)
+        self.assertFalse(form.is_valid())
+    
+    def test_form_post(self):
+        form1 = Answer_Form(
+            data={'answer1': True,
+                  'answer2': False,
+                  'answer3': True}
+        )
+        self.assertTrue(form1.is_valid())
+        self.assertEqual(form1.cleaned_data['answer1'], True)
+        self.assertEqual(form1.cleaned_data['answer2'], False)
+        self.assertEqual(form1.cleaned_data['answer3'], True)
