@@ -140,3 +140,12 @@ class IsAtLeastOneAnswerCorrectFunTest(TestCase):
 
         self.assertTrue(form4.is_valid())
         self.assertTrue(is_at_least_one_answer_correct([form4.cleaned_data['answer1'], form4.cleaned_data['answer2'], form4.cleaned_data['answer3']]))
+
+class CheckIfTestPassedFunTest(TestCase):
+    def setUp(self):
+        pass
+
+    def test_check_if_test_passed(self):
+        result, user_result = check_if_test_passed(50, 100, 70)
+        self.assertEqual(user_result, 50)
+        self.assertFalse(result)
